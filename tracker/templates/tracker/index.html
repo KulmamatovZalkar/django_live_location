@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Location Tracking</title>
+</head>
+<body>
+    <h1>Live Location Tracking</h1>
+    <div id="location-list">
+        <h2>Location History:</h2>
+        <ul id="locations"></ul>
+    </div>
+    <script>
+        var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+        var ws_path = ws_scheme + '://' + window.location.host + '/ws/location/';
+        var ws = new WebSocket(ws_path);
+
+        ws.onmessage = function(e) {
+            var data = JSON.parse(e.data);
+            var latitude = data.latitude;
+            var longitude = data.longitude;
+            var listItem = document.createElement('li');
+            listItem.textContent = 'Latitude: ' + latitude + ', Longitude: ' + longitude;
+            document.getElementById('locations').appendChild(listItem);
+        };
+
+        ws.onclose = function(e) {
+            console.error('WebSocket closed unexpectedly');
+        };
+    </script>
+</body>
+</html>
